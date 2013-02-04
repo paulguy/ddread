@@ -1,3 +1,5 @@
 Read PS1 or (untested) N64 memory cards using a dexdrive.
 
-More to be done...
+USAGE: ddread <serial device> [output file]
+
+Defaults to memcard.bin.

@@ -21,7 +21,6 @@
 #include <stdint.h>
 #include <time.h>
 
-#define MODEMDEVICE "/dev/ttyUSB0"
 #define FALSE 0
 #define TRUE 1
 #define BARMAXSIZE 60
@@ -100,9 +99,15 @@ int main(int argc, char **argv) {
 	animation = ".oOo. ";
 	animlength = strlen(animation);
 
-	fd = open(MODEMDEVICE, O_RDWR | O_NOCTTY ); 
+	if(argc < 2) {
+		fprintf(stderr, "USAGE: %s <serial device> [output file]\n", argv[0]);
+		exit(-1);
+	} else {
+		fd = open(argv[1], O_RDWR | O_NOCTTY ); 
+	}
+
 	if (fd < 0) {
-		perror(MODEMDEVICE);
+		perror(argv[1]);
 		cleanup(fd, oldtio, -1);
 	}
 
@@ -189,7 +194,12 @@ int main(int argc, char **argv) {
 			break;
 	}
 
-	outfile = fopen("memcard.bin", "wb");
+	if(argc > 2) {
+		outfile = fopen(argv[1], "wb");
+	} else {
+		outfile = fopen("memcard.bin", "wb");
+	}
+
 	if(outfile == NULL) {
 		fprintf(stderr, "Couldn't open file for writing.\n");
 		cleanup(fd, oldtio, -1);
